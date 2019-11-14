@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { BrowserRouter as Link, Redirect } from "react-router-dom";
 import "./App.css";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-const Login = () => {
-  const [login, setLogin] = useState();
-  const [pwd, setPwd] = useState();
+const Login = props => {
+  const [login, setLogin] = useState(null);
+  const [pwd, setPwd] = useState(null);
+  // const [token, setToken] = useState(null);
+
+  console.log("props.match", props.match);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -17,9 +21,13 @@ const Login = () => {
         password: pwd
       })
       .then(function(response) {
-        console.log("success", response);
+        console.log("success, token = ", response.data.token);
+        //setToken(response.data.token);
+        props.getUser(response.data.token);
+        //store token in cookie
+        Cookies.set("LivredOrToken", response.data.token);
         //redirect to home
-        //return <Redirect to="/Messages" />;
+        // return <Redirect to="/Messages" />;
         window.location = "/";
       })
       .catch(function(error) {
